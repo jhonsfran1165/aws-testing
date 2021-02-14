@@ -4,6 +4,7 @@ FROM python:3.8 as build-python
 # hadolint ignore=DL3018,DL3015,DL3008
 RUN apt-get -y update \
   && apt-get install -y gettext \
+  && apt-get install -y python3-psycopg2 \
   # Cleanup apt cache
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
@@ -32,7 +33,8 @@ RUN apt-get update && apt-get install -y \
   shared-mime-info \
   mime-support && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY api/src/ /jaguar
+COPY jaguar/ /jaguar
+COPY run/ /jaguar/run
 COPY --from=build-python /usr/local/lib/python3.8/site-packages/ /usr/local/lib/python3.8/site-packages/
 COPY --from=build-python /usr/local/bin/ /usr/local/bin/
 WORKDIR /jaguar
