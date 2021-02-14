@@ -44,4 +44,4 @@ ENV PORT 8088
 ENV PYTHONUNBUFFERED 1
 ENV PROCESSES 4
 
-CMD ["bash", "-c", "python3 waitForMongo.py && python3 manage.py makemigrations && python3 manage.py migrate && uwsgi --ini /jaguar/jaguarapi/uwsgi.ini"]
+CMD ["bash", "-c", "python3 waitForPostgres.py && python3 manage.py makemigrations && python3 manage.py migrate && uwsgi --ini /jaguar/jaguar/uwsgi.ini"]

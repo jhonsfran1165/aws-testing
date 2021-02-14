@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaguar-app
+  labels:
+    app: jaguar-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jaguar-app
+  template:
+    metadata:
+      name: jaguar-app
+      labels:
+        app: jaguar-app
+    spec:
+      containers:
+        - name: jaguar-app
+          image: jhonsfran/jaguar-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8088
+          envFrom:
+            - configMapRef:
+                name: app-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "20m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
