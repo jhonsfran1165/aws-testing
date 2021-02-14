@@ -2,4 +2,4 @@
 **/*.pyc
 *.sqlite
 docs
-env
+virtualenv

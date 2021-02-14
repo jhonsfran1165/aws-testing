@@ -1,42 +1,44 @@
 version: "3.4"
 
 networks:
-  cleanpass:
+  jaguar:
     external:
-      name: cleanpass.localhost
+      name: jaguar.localhost
 
 services:
-  cleanpassapi:
-    image: cleanpass/api:local-dev
-    container_name: cleanpass_api
+  jaguarapi:
+    image: jaguar/api:local-dev
+    container_name: jaguar_api
     build:
       context: .
       dockerfile: Dockerfile-dev
     env_file:
-      - .env
+      - ./jaguar/.env
     networks:
       default:
-      cleanpass:
-    command: bash -c "python waitForMongo.py && python manage.py migrate && python manage.py runserver 0.0.0.0:8088"
+      jaguar:
+    command: bash -c "python waitForPostgres.py && python manage.py migrate && python manage.py runserver 0.0.0.0:8088"
     volumes:
-      - ./api/src:/cleanpass
+      - ./jaguar:/jaguar
     ports:
       - "8088:8088"
 
-  cleanpassdb:
-    image: mongo:4.2.0
-    command: mongod --port 28018 --oplogSize 128 --storageEngine=wiredTiger --wiredTigerCacheSizeGB 1.5 --serviceExecutor adaptive
-    env_file:
-      - .env
+
+  jaguardb:
+    image: postgres:10.3
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     networks:
       default:
-      cleanpass:
+      jaguar:
     ports:
-      - "28018:28018"
+      - 5432
     volumes:
-      - cleanpassdb-db4:/data/db
+      - postgres-data:/var/lib/postgresql/data
     restart: on-failure
-    container_name: cleanpass_db
+    container_name: jaguar_db
 
 volumes:
-  cleanpassdb-db4:
+  postgres-data:
