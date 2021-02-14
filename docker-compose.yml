@@ -1,0 +1,42 @@
+version: "3.4"
+
+networks:
+  cleanpass:
+    external:
+      name: cleanpass.localhost
+
+services:
+  cleanpassapi:
+    image: cleanpass/api:local-dev
+    container_name: cleanpass_api
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    env_file:
+      - .env
+    networks:
+      default:
+      cleanpass:
+    command: bash -c "python waitForMongo.py && python manage.py migrate && python manage.py runserver 0.0.0.0:8088"
+    volumes:
+      - ./api/src:/cleanpass
+    ports:
+      - "8088:8088"
+
+  cleanpassdb:
+    image: mongo:4.2.0
+    command: mongod --port 28018 --oplogSize 128 --storageEngine=wiredTiger --wiredTigerCacheSizeGB 1.5 --serviceExecutor adaptive
+    env_file:
+      - .env
+    networks:
+      default:
+      cleanpass:
+    ports:
+      - "28018:28018"
+    volumes:
+      - cleanpassdb-db4:/data/db
+    restart: on-failure
+    container_name: cleanpass_db
+
+volumes:
+  cleanpassdb-db4:

@@ -1,0 +1,15 @@
+FROM python:3.6
+
+LABEL maintainer="jhonsfran <jhonsfran@gmail.com>"
+
+RUN mkdir -p /jaguar
+WORKDIR /jaguar
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Replace this with your application's port
+EXPOSE 8088
+
+# Run daemon-or-script
+CMD [ "python", "/jaguar/manage.py runserver 0.0.0.0:8088" ]

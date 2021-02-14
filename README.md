@@ -1,0 +1,1 @@
+TODO: create a small manual to get started with the project
