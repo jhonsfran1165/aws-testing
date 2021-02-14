@@ -2,11 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: jaguar-svc
-  labels:
-    app: jaguar-svc
 spec:
   type: NodePort
-  ports:
-   - port: 8088
   selector:
    app: jaguar-app
+  ports:
+    - name: http
+      port: 8088
+      targetPort: 8088
+      protocol: TCP
+      nodePort: 30080

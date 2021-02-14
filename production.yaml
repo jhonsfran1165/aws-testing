@@ -27,13 +27,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: jaguar-svc
     author: jhonsfran
   name: jaguar-svc
   namespace: production
 spec:
   ports:
-  - port: 8088
+  - name: http
+    nodePort: 30080
+    port: 8088
+    protocol: TCP
+    targetPort: 8088
   selector:
     app: jaguar-app
     author: jhonsfran
@@ -50,10 +53,10 @@ metadata:
 spec:
   ports:
   - port: 5432
+    targetPort: 5432
   selector:
     app: postgres
     author: jhonsfran
-  type: NodePort
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -96,7 +99,7 @@ metadata:
   name: jaguar-app
   namespace: production
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: jaguar-app
@@ -113,7 +116,7 @@ spec:
         - configMapRef:
             name: app-config-h679mt2b6h
         image: jhonsfran/jaguar-api:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: jaguar-app
         ports:
         - containerPort: 8088
@@ -125,10 +128,11 @@ spec:
             cpu: 20m
             memory: 64Mi
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app: postgres
     author: jhonsfran
   name: postgres
   namespace: production
