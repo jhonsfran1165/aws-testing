@@ -4,7 +4,6 @@ FROM python:3.8 as build-python
 # hadolint ignore=DL3018,DL3015,DL3008
 RUN apt-get -y update \
   && apt-get install -y gettext \
-  && apt-get install -y python3-psycopg2 \
   # Cleanup apt cache
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
@@ -46,4 +45,4 @@ ENV PORT 8088
 ENV PYTHONUNBUFFERED 1
 ENV PROCESSES 4
 
-CMD ["bash", "-c", "python3 waitForPostgres.py && python3 manage.py makemigrations && python3 manage.py migrate && uwsgi --ini /jaguar/jaguar/uwsgi.ini"]
+CMD ["bash","-c", "sh run"]
